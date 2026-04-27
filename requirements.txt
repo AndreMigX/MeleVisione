@@ -1,1 +1,10 @@
+numpy
 opencv-python
+torch
+open3d
+transformers
+streamlit
+plotly
+scikit-learn
+matplotlib
+git+https://github.com/facebookresearch/segment-anything.git
