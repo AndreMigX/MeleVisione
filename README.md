@@ -146,8 +146,7 @@ SemanticSpot3D/
 │   └── video.mp4           # Input video
 ├── colmap/
 │   ├── fused.ply           # Dense 3D point cloud from COLMAP
-│   ├── model/              # COLMAP text exports (cameras, images, points3D)
-│   └── database.db         # COLMAP feature database
+│   └── model/              # COLMAP text exports (cameras, images, points3D)
 ├── semantic_scene.npz      # Semantic scene (gitignored, download separately)
 └── sam_vit_b_01ec64.pth    # SAM checkpoint (gitignored, download separately)
 ```
