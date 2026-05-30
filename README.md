@@ -16,11 +16,9 @@ A user can type a natural-language query (e.g. *"silver water bottle"*) and the 
 | **3. Semantic Projection** | Segment every frame with SAM, embed each segment with CLIP, then project the features onto the 3D points via known camera intrinsics/extrinsics | SAM (ViT-B) + CLIP (ViT-B/32) |
 | **4. Semantic Search** | At query time, encode the text with CLIP, compute cosine similarity against every point's feature vector, and highlight the best matches | CLIP + DBSCAN (spatial cleanup) |
 
-## Demo
+## Demo Video
 
-https://github.com/user-attachments/assets/PLACEHOLDER
-
-> *(Replace the link above with the actual video URL once uploaded to the GitHub repo.)*
+https://youtu.be/KG0jpMZ2JLM
 
 The Streamlit app allows you to:
 

@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="SemanticSpot 3D", layout="wide")
 
 st.title("SemanticSpot 3D")
-st.markdown("Team: *Andrea Migliore, Giovanni Elisei, Carlo Fiammenghi*")
 
 
 # Resource loading and caching
