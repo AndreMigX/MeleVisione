@@ -1,4 +1,3 @@
-import cv2
 import os
 import sys
 
@@ -23,9 +22,7 @@ def extract_frames(video_path, output_dir, frames_per_second=3):
     print(f"Total frames: {total_frames}")
     print(f"Duration: {duration:.2f} seconds")
 
-    # Calculate interval
-    # We want 3 frames per second. 
-    # If fps is 30, we take every 10th frame.
+    # Calculate frame sampling interval based on the frames_per_second parameter
     interval = fps / frames_per_second
     
     count = 0
@@ -36,8 +33,7 @@ def extract_frames(video_path, output_dir, frames_per_second=3):
         if not ret:
             break
             
-        # Check if this frame matches our 3fps target
-        # We use current frame index / interval comparison
+        # Sample frames based on the target sampling interval
         if count >= saved_count * interval:
             frame_name = os.path.join(output_dir, f"frame_{saved_count:04d}.jpg")
             cv2.imwrite(frame_name, frame)
@@ -50,7 +46,7 @@ def extract_frames(video_path, output_dir, frames_per_second=3):
 
 if __name__ == "__main__":
     video_file = "video.mp4"
-    output_folder = "phase1/imgs"
+    output_folder = "frames"
     
     try:
         import cv2

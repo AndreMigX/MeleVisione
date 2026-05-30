@@ -7,14 +7,14 @@ from transformers import CLIPProcessor, CLIPModel
 from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 
-# --- page setup ---
+# Page configuration
 st.set_page_config(page_title="SemanticSpot 3D", layout="wide")
 
 st.title("SemanticSpot 3D")
 st.markdown("Team: *Andrea Migliore, Giovanni Elisei, Carlo Fiammenghi*")
 
 
-# --- cached loaders (only run once) ---
+# Resource loading and caching
 
 @st.cache_resource
 def load_clip():
@@ -49,10 +49,10 @@ with st.spinner("Loading model and scene data..."):
     xyz, rgb, features, consistency = load_scene()
 
 
-# --- sidebar controls ---
+# Sidebar controls
 
 st.sidebar.header("Search")
-search_query = st.sidebar.text_input("Search for an object:", placeholder="e.g. yellow water bottle")
+search_query = st.sidebar.text_input("Search for an object:", placeholder="e.g. silver water bottle")
 threshold = st.sidebar.slider("CLIP confidence threshold", min_value=0.20, max_value=0.35, value=0.28, step=0.01)
 
 st.sidebar.markdown("---")
@@ -67,8 +67,7 @@ use_clustering = st.sidebar.checkbox("Enable spatial filter (DBSCAN)", value=Tru
 cluster_sensitivity = st.sidebar.slider("Filter sensitivity", min_value=0.01, max_value=0.20, value=0.05, step=0.01)
 
 
-# --- build colours ---
-
+# Set point colors and sizes
 if show_consistency_heatmap:
     cmap = plt.get_cmap('plasma')
     colors = (cmap(consistency)[:, :3] * 255).astype(np.uint8)
@@ -77,7 +76,7 @@ else:
 
 sizes = np.full(len(xyz), 2)
 
-# --- search logic ---
+# Semantic search logic
 
 if search_query:
     text_vec = encode_query(search_query, clip_model, clip_processor, device)
@@ -86,12 +85,12 @@ if search_query:
     mask = (sims > threshold) & (consistency >= min_consistency)
 
     if np.any(mask):
-        # top-k filter
+        # Apply Top-K filtering
         if np.sum(mask) > max_points:
             cutoff = np.sort(sims[mask])[-max_points]
             mask = mask & (sims >= cutoff)
 
-        # spatial filter with DBSCAN to remove outliers
+        # Apply spatial filtering (DBSCAN) to remove outliers
         if use_clustering:
             pts = xyz[mask]
             if len(pts) > 10:
@@ -103,11 +102,11 @@ if search_query:
 
     if np.any(mask):
         if not show_consistency_heatmap:
-            # grey out everything except the hit, which goes bright green
+            # Color non-matching points gray and highlight search matches in green
             colors[~mask] = [40, 40, 40]
             colors[mask] = [50, 255, 50]
         else:
-            # dim non-matching points so the heatmap stands out
+            # Attenuate non-matching points to emphasize the consistency heatmap
             colors[~mask] = (colors[~mask] * 0.2).astype(np.uint8)
 
         sizes[mask] = 5
@@ -116,9 +115,7 @@ if search_query:
         st.warning("Nothing found — try lowering the threshold.")
 
 
-# --- 3D plot ---
-# We render via a raw HTML component so we can persist the camera angle
-# across Streamlit re-runs (otherwise it resets every time).
+# Render using a custom HTML component to persist the 3D camera angle across Streamlit re-runs.
 
 if show_consistency_heatmap:
     hover_text = [f"Consistency: {c:.2f}" for c in consistency]
@@ -153,8 +150,7 @@ fig.update_layout(
 
 fig_json = fig.to_json()
 
-# Embed plotly in an iframe so the camera position survives widget changes.
-# We stash the camera in window.parent so it doesn't get lost on re-render.
+# Embed Plotly inside an HTML iframe and store the camera state in window.parent to preserve orientation during Streamlit updates.
 html_plot = f"""
 <!DOCTYPE html>
 <html>
